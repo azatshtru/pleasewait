@@ -1,11 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-<<<<<<< Updated upstream
-import { getDatabase, ref, set, push, onChildAdded } from "firebase/database";
-=======
 import { getDatabase, ref, set, push, onChildAdded, child, get } from "firebase/database";
->>>>>>> Stashed changes
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 

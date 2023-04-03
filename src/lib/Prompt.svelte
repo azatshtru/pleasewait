@@ -5,11 +5,7 @@
     export let sendMessage;
 
     onMount(async () => {
-<<<<<<< Updated upstream
-        setAppendCallback(() => {sendMessage("Thank you! We are excited to show you the future.", 10000);});
-=======
         setAppendCallback(() => {sendMessage("Thank you! We are excited to show you the future.", 20000);});
->>>>>>> Stashed changes
     });
 
     let active = false;
@@ -29,11 +25,7 @@
     function promptSubmit () {
         if(promptText.trim() == "" || !buttonState) { return; }
         if(!verifyEmail(promptText)){
-<<<<<<< Updated upstream
-            sendMessage("That doesn't seem like a valid email address :(", 3000);
-=======
-            sendMessage("That doesn't seem like a valid email address :(", 1000);
->>>>>>> Stashed changes
+            sendMessage("That doesn't seem like a valid email address :(", 2000);
             return;
         }
 
