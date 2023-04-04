@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getDatabase, ref, set, onValue } from "firebase/database";
+import { getDatabase, ref, set, get } from "firebase/database";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -38,3 +38,16 @@ export function addEmail(email){
         console.log(e);
     }
 }
+
+const valuesRef = ref(database, 'values');
+
+export let valueObjectSubscriberList = [];;
+
+get(valuesRef).then(snapshot => {
+    if(snapshot.exists()){
+        valueObjectSubscriberList.forEach(f => f(snapshot.val()));
+        console.log(snapshot.val());
+    } else {
+        console.log("No values");
+    }
+}).catch(error => console.error(error));

@@ -1,9 +1,13 @@
 <script>
+    import { onMount } from "svelte";
     import Prompt from "./lib/Prompt.svelte";
+    import { valueObjectSubscriberList } from "./setup";
 
     let textAreaRef;
+    
+    onMount(() => {valueObjectSubscriberList.push((v) => {headline = v.headline; text = headline})});
 
-    const headline = "Immutability without authority";
+    let headline = "Immutability without authority";
     let text = headline;
 
     const fixingSpeed = 25;
