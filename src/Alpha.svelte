@@ -14,6 +14,8 @@
     let fixing;
     let fixingTimeout;
 
+    let messageTimeout;
+
     function setDynamicTextAreaHeight () {
         if(!textAreaRef) {return}
         textAreaRef.style.height = 'auto';
@@ -70,6 +72,7 @@
         fixing = true;
         fixingTimeout = setTimeout(() => fixing = false, t * fixingSpeed);
         
+        clearTimeout(typing);
         typing = setTimeout(resetText, (t * fixingSpeed) + resetTime);
 
         for(let i = 0; i < message.length; i++){
