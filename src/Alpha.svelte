@@ -2,7 +2,6 @@
     import Prompt from "./lib/Prompt.svelte";
 
     let textAreaRef;
-    let setButtonState;
 
     const headline = "Immutability without authority";
     let text = headline;
@@ -12,7 +11,10 @@
     let typing;
     let areaDisabled;
 
-    function setDynamicHeight () {
+    let fixing;
+    let fixingTimeout;
+
+    function setDynamicTextAreaHeight () {
         if(!textAreaRef) {return}
         textAreaRef.style.height = 'auto';
         textAreaRef.style.height = textAreaRef.scrollHeight + 'px';
@@ -22,22 +24,30 @@
         if(message[i] != text[i]){
             text = text.substring(0, i) + message[i] + text.substring(i+1);
         }
-        setDynamicHeight();
+        setDynamicTextAreaHeight();
     }
 
     function emptyRemainingText () {
         text = text.substring(0, text.length - 1) + "";
-        setDynamicHeight();
+        setDynamicTextAreaHeight();
     }
 
     function resetHeadlineString () {
+        if(fixing){
+            return;
+        }
+        
+        fixing = true;
+
+        const t = text.length;
+
+        fixingTimeout = setTimeout(() => fixing = false, t * fixingSpeed);
+
         for(let i = 0; i < headline.length; i++){
             setTimeout(() => checkAndReplace(headline, i), i*fixingSpeed);
         }
 
         if(headline.length == text.length){ return; }
-
-        const t = text.length;
 
         for(let i = headline.length; i < t; i++){
             setTimeout(() => emptyRemainingText(), i * fixingSpeed);
@@ -45,8 +55,22 @@
     }
 
     function showDynamicMessage (message, resetTime) {
+        if(fixing){
+            return;
+        }
+
+        if(text == message){
+            return;
+        }
+
         disableTextArea();
-        //separate area disable and button state code.
+
+        const t = text.length;
+
+        fixing = true;
+        fixingTimeout = setTimeout(() => fixing = false, t * fixingSpeed);
+        
+        typing = setTimeout(resetText, (t * fixingSpeed) + resetTime);
 
         for(let i = 0; i < message.length; i++){
             setTimeout(() => checkAndReplace(message, i), i*fixingSpeed);
@@ -54,21 +78,17 @@
 
         if(message.length == text.length){ return; }
 
-        const t = text.length;
-
         for(let i = message.length; i < t; i++){
             setTimeout(() => emptyRemainingText(), i * fixingSpeed);
         }
 
-        setTimeout(handleChange, (t * fixingSpeed) + resetTime);
     }
 
     function disableTextArea () {
         textAreaRef.disabled = true;
-        setButtonState(false);
         
         const t = text.length;
-        areaDisabled = setTimeout(() => {textAreaRef.disabled = false; setButtonState(true);}, t * fixingSpeed);
+        areaDisabled = setTimeout(() => {textAreaRef.disabled = false;}, t * fixingSpeed);
     }
 
     function resetText() {
@@ -83,7 +103,7 @@
     
     function handleChange (e) {
 
-        setDynamicHeight();
+        setDynamicTextAreaHeight();
 
         clearTimeout(typing);
 
@@ -95,7 +115,7 @@
 <div class="container">
     <textarea bind:this={textAreaRef} bind:value={text} on:input={handleChange} class="moment"></textarea>
     <div class="emailBox">
-        <Prompt sendMessage={(m, t) => showDynamicMessage(m, t)} bind:toggleButton={setButtonState} />
+        <Prompt sendMessage={(m, t) => showDynamicMessage(m, t)} />
     </div>
 </div>
 
