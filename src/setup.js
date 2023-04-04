@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getDatabase, ref, set, push, onChildAdded, child, get } from "firebase/database";
+import { getDatabase, ref, set, onValue } from "firebase/database";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -24,30 +24,17 @@ const analytics = getAnalytics(app);
 
 const database = getDatabase(app);
 
-const mailingListRef = ref(database, 'emails');
-
 export function addEmail(email){
-    const emailRef = push(mailingListRef);
-    set(emailRef, {
-        email: email,
-    });
+    const oEmail = email;
+    const flawedEmail = email.replace(/\./g, 'µ');
+    const emailRef = ref(database, 'emails/' + flawedEmail);
+    try{
+        set(emailRef, {
+            send: true,
+            email: oEmail,
+        });
+    }
+    catch(e) {
+        console.log(e);
+    }
 }
-
-let appendCallback;
-
-let readAmount = 0;
-
-export const setAppendCallback = (callback) => {
-    appendCallback = callback;
-};
-
-export const incrementReadCount = () => readAmount += 1;
-
-onChildAdded(mailingListRef, (data) => {
-    if(readAmount < 1) {
-        return; 
-    }
-    if(appendCallback) {
-        appendCallback();
-    }
-});

@@ -1,12 +1,7 @@
 <script>
-    import { onMount } from "svelte";
-    import { addEmail, setAppendCallback, incrementReadCount } from "../setup";
+    import { addEmail } from "../setup";
 
     export let sendMessage;
-
-    onMount(async () => {
-        setAppendCallback(() => {sendMessage("Thank you! We are excited to show you the future.", 20000);});
-    });
 
     let active = false;
     let typing = false;
@@ -23,18 +18,17 @@
     };
 
     function promptSubmit () {
-        if(promptText.trim() == "" || !buttonState) { return; }
+        if(!buttonState) { return; }
+        if(promptText.trim() == ""){ return; } 
         if(!verifyEmail(promptText)){
-            sendMessage("That doesn't seem like a valid email address :(", 2000);
+            sendMessage("That doesn't seem like a valid email address :(", 1000);
             return;
         }
-
-        incrementReadCount();
 
         addEmail(promptText);
         promptText = "";
 
-        //sendMessage("Thank you! We are excited to show you the future.", 10000);
+        sendMessage("Thank you! We are excited to show you the future.", 20000);
     }
 
     function onKeyDown(e){

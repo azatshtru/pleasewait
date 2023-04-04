@@ -7,12 +7,13 @@
     const headline = "Immutability without authority";
     let text = headline;
 
-    const fixingSpeed = 35;
+    const fixingSpeed = 25;
     
     let typing;
     let areaDisabled;
 
     function setDynamicHeight () {
+        if(!textAreaRef) {return}
         textAreaRef.style.height = 'auto';
         textAreaRef.style.height = textAreaRef.scrollHeight + 'px';
     }
@@ -45,6 +46,7 @@
 
     function showDynamicMessage (message, resetTime) {
         disableTextArea();
+        //separate area disable and button state code.
 
         for(let i = 0; i < message.length; i++){
             setTimeout(() => checkAndReplace(message, i), i*fixingSpeed);
@@ -58,7 +60,7 @@
             setTimeout(() => emptyRemainingText(), i * fixingSpeed);
         }
 
-        setTimeout(handleChange, t * fixingSpeed + resetTime);
+        setTimeout(handleChange, (t * fixingSpeed) + resetTime);
     }
 
     function disableTextArea () {
@@ -85,7 +87,7 @@
 
         clearTimeout(typing);
 
-        typing = setTimeout(resetText, 2000);
+        typing = setTimeout(resetText, 3000);
     }
 
 </script>
