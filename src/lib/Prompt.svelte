@@ -7,6 +7,10 @@
     let active = false;
     let typing = false;
 
+    export let isFocused = false;
+
+    let emailFieldRef;
+
     let promptText;
 
     let messageTimeout;
@@ -69,7 +73,7 @@
 <p class="text">{subheading0} <span style="color:blueviolet; font-weight: bold">{subheading1}</span></p>
 <br>
 <div class="textbox">
-    <input bind:value={promptText} class="field" on:focusout={() => {typing=false;}} on:focus={() => {typing=true;}} placeholder="type your email..">
+    <input bind:this={emailFieldRef} bind:value={promptText} class="field" on:focusout={() => {typing=false;}} on:focus={() => {typing=true; isFocused=true;}} on:blur={() => isFocused=false} placeholder="type your email..">
     <button class="send" on:click={promptSubmit} class:active={active}>subscribe</button>
 </div>
 

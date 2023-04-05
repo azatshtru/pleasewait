@@ -4,11 +4,13 @@
     import { valueObjectSubscriberList } from "./setup";
 
     let textAreaRef;
+
+    let checkEmailFieldFocus;
     
-    onMount(() => {valueObjectSubscriberList.push((v) => {headline = v.headline; text = headline})});
+    onMount(() => {valueObjectSubscriberList.push((v) => {headline = v.headline; resetText();})});
 
     let headline = "Immutability without authority";
-    let text = headline;
+    let text = "";
 
     const fixingSpeed = 25;
     
@@ -69,9 +71,9 @@
             return;
         }
 
-        disableTextArea();
+        disableTextArea(message.length);
 
-        const t = text.length;
+        const t = message.length > text.length ? message.length : text.length;
 
         fixing = true;
         fixingTimeout = setTimeout(() => fixing = false, t * fixingSpeed);
@@ -91,17 +93,22 @@
 
     }
 
-    function disableTextArea () {
+    function disableTextArea (v) {
         textAreaRef.disabled = true;
         
-        const t = text.length;
-        areaDisabled = setTimeout(() => {textAreaRef.disabled = false;}, t * fixingSpeed);
+        const t = v > text.length ? v : text.length;
+        areaDisabled = setTimeout(() => {
+            textAreaRef.disabled = false; 
+            if(!checkEmailFieldFocus){
+                textAreaRef.focus();
+            }
+        }, t * fixingSpeed);
     }
 
     function resetText() {
         clearTimeout(areaDisabled);
 
-        disableTextArea();
+        disableTextArea(headline.length);
 
         if(text !== headline){
             resetHeadlineString();
@@ -122,7 +129,7 @@
 <div class="container">
     <textarea bind:this={textAreaRef} bind:value={text} on:input={handleChange} class="moment"></textarea>
     <div class="emailBox">
-        <Prompt sendMessage={(m, t) => showDynamicMessage(m, t)} />
+        <Prompt bind:isFocused={checkEmailFieldFocus} sendMessage={(m, t) => showDynamicMessage(m, t)} />
     </div>
 </div>
 
