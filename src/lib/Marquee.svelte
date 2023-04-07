@@ -1,5 +1,4 @@
 <script>
-
   let text;
 
   function getLine () {
@@ -37,7 +36,6 @@
     white-space: nowrap;
     overflow: hidden;
     position: absolute;
-
   }
 
   .marquee span {
